@@ -1,8 +1,21 @@
-import express, {Express, Request, Response} from "express"
-const PORT = 3000;
+import dotenv from 'dotenv';
+dotenv.config();
+import express, {Express, Request, Response} from "express";
+// import cors from;
 
+import connectDB from "./config/ds";
 
 const app : Express = express();
+const PORT = process.env.PORT || 3000;
+
+//Connect Database
+connectDB();
+// Body Parser
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+
+// app.use(cors());
 
 //Home route
 
