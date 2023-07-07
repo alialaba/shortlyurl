@@ -13,6 +13,7 @@ interface User {
     password: string;
     urls:string[];
     isValidPassword(password: string): Promise<boolean>;
+    getSignedToken(): string;
     
 }
 
@@ -57,6 +58,15 @@ UserSchema.pre("save", async function(next) {
       next();
     
 })
+
+// You will also need to make sure that the user trying to log in has the correct credentials. Add the following new method:
+UserSchema.methods.isValidPassword = async function(password: string) {
+    const user = this;
+    const compare = await bcrypt.compare(password, user.password);
+  
+    return compare;
+  }
+
 
 //you will need token to get signed in.
 const jwtSecret: Secret | undefined = process.env.JWT_SECRET;
