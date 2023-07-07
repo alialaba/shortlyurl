@@ -4,6 +4,7 @@ import express, {Express, Request, Response} from "express";
 // import cors from;
 
 import connectDB from "./config/ds";
+import authRoute from "./Routes/Auth";
 
 const app : Express = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,9 @@ app.use(express.json());
 
 
 // app.use(cors());
+
+//Routes 
+app.use("/api/auth", authRoute);
 
 //Home route
 
