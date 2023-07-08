@@ -1,13 +1,14 @@
 import dotenv from 'dotenv';
 dotenv.config()
 
-import mongoose , {model, Schema} from "mongoose";
+import mongoose , {Document, Model, Schema} from "mongoose";
 import bcrypt from "bcrypt";
 import jwt, {Secret} from "jsonwebtoken"
 
 
 
-interface User {
+export interface User extends Document {
+    // _id: string;
     fullname: string;
     email: string;
     password: string;
@@ -17,6 +18,7 @@ interface User {
     
 }
 
+export type UserDocument = User & Document;
 
 const UserSchema = new Schema<User>({
 
@@ -82,5 +84,7 @@ UserSchema.methods.getSignedToken = function(){
 
 
 
-const UserModel = model<User>("users", UserSchema);
-export  default UserModel;
+ const UserModel: Model<User> = mongoose.model<User>("users", UserSchema);
+ export default UserModel;
+
+

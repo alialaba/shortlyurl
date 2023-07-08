@@ -5,6 +5,7 @@ import express, {Express, Request, Response} from "express";
 
 import connectDB from "./config/ds";
 import authRoute from "./Routes/Auth";
+import urlRoute from "./Routes/Url";
 
 const app : Express = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +21,7 @@ app.use(express.json());
 
 //Routes 
 app.use("/auth", authRoute);
+app.use("/", urlRoute);
 
 //Home route
 
