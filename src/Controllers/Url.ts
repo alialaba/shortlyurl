@@ -5,6 +5,8 @@ import Url from "../Models/Url";
 import User from "../Models/User";
 import { nanoid } from 'nanoid';
 import { validateUrl } from '../Utils/validateUrl';
+import QRCode from "qrcode";
+import fs from "fs";
 
 import ErrorResponse from '../Utils/errorResponse';
 
@@ -49,7 +51,12 @@ export const shortenUrl = async(req: Request, res: Response, next: NextFunction)
               user.urls= user.urls.concat(savedUrl.shortUrl)
               await user.save()
 
-              res.status(201).json({success:true, newShortenUrl})
+              // Generate QR code
+              const qrCode = await QRCode.toDataURL(shortUrl);
+
+              res.status(201).json({success:true, newShortenUrl, qrCode});
+
+              
 
             }
         
@@ -95,6 +102,23 @@ export const redirectUrl = async (req: Request,res: Response, next: NextFunction
 
 }
 
+export const deleteUrl = async(req:Request, res:Response, next: NextFunction)=>{
+    try {
 
+        const url = await Url.findOneAndDelete({urlId: req.params.urlId});
+        if(!url){
+            return next(new ErrorResponse("Not found", 404))
+        }
+        // Delete QR code image file if it exists
+        const qrCodePath = `path/to/qrCodes/${req.params.urlId}.png`;
+        if (fs.existsSync(qrCodePath)) {
+            fs.unlinkSync(qrCodePath);
+        }
+        res.status(200).json({ success: true, message: 'URL deleted successfully' });
+
+    } catch (error) {
+        next(error)
+    }
+}
 
 
