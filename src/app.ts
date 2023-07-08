@@ -21,7 +21,7 @@ app.use(express.json());
 
 //Routes 
 app.use("/auth", authRoute);
-app.use("/", urlRoute);
+app.use("/user", urlRoute);
 
 //Home route
 

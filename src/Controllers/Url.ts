@@ -59,7 +59,42 @@ export const shortenUrl = async(req: Request, res: Response, next: NextFunction)
     }else{
         return next(new ErrorResponse('Invalid Original Url', 400))
     }
+}
 
 
+
+//Redirect the Url
+export const redirectUrl = async (req: Request,res: Response, next: NextFunction)=>{
+
+    try {
+        const url = await Url.findOne({urlId: req.params.urlId});
+
+        if(url){
+            await Url.updateOne({urlId:req.params.urlId}, {$inc: {clicks: 1}});
+            // return res.redirect((await url).originalUrl);
+
+
+        let user = await User.findById(req.user._id)
+             // Check if the owner of the URL matches the authenticated user
+        if (user && user.urls.includes(url.shortUrl)){
+             return res.redirect(url.originalUrl);
+         } else {
+        // If the user is not the owner, return an error or handle it accordingly
+            return next(new ErrorResponse("Unauthorized User", 401));
+        }
+        }else{
+            // res.status(404).json("Not Found")
+            return next(new ErrorResponse("Not Found", 404));
+        }
+        
+    } catch (error) {
+        // console.log(error);
+        // res.status(500).json('Server Error');
+        next(error)
+    }
 
 }
+
+
+
+

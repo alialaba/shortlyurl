@@ -2,10 +2,11 @@ import express from 'express';
 
 const router =  express.Router();
 import { protect } from '../Middlewares/auth';
-// import convertToCustomRequest from '../Middlewares/convertToCustomReq';
 
-import { shortenUrl } from '../Controllers/Url';
+import { shortenUrl, redirectUrl } from '../Controllers/Url';
 
-router.route("/short").post(protect,  shortenUrl)
+
+router.route("/create").post(protect,  shortenUrl);
+router.route("/url/:urlId").get(protect, redirectUrl);
 
 export default router;
