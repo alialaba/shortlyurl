@@ -102,6 +102,17 @@ export const redirectUrl = async (req: Request,res: Response, next: NextFunction
 
 }
 
+// export const getAllUrls = async(req: Request, res:Response, next: NextFunction)=>{
+//     try {
+//         const urls = await Url.find({})
+        
+//     } catch (error) {
+//         next(error)
+//     }
+// }
+
+
+
 export const deleteUrl = async(req:Request, res:Response, next: NextFunction)=>{
     try {
 
