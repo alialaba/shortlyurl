@@ -15,7 +15,7 @@ import ErrorResponse from '../Utils/errorResponse';
 
 export const shortenUrl = async(req: Request, res: Response, next: NextFunction)=>{
 
-    const {originalUrl} = req.body;
+    const {originalUrl, title} = req.body;
     const BASE = process.env.BASE;
 
     const urlId: string = nanoid(5);
@@ -36,13 +36,18 @@ export const shortenUrl = async(req: Request, res: Response, next: NextFunction)
                     return next(new ErrorResponse('User not found', 404));
                   }
                 const shortUrl = `${BASE}/${urlId}`;
+                // Generate QR code
+              const qrCode = await QRCode.toDataURL(shortUrl);
 
                 let newShortenUrl = await Url.create({
                     originalUrl,
                     shortUrl,
                     urlId,
+                    title,
+                    qrCode,
                     createdAt: new Date(),
-                   owner: user._id
+                    owner: user._id,
+                   
                 })
                 // console.log("new datas", newShortenUrl)
     
@@ -51,8 +56,7 @@ export const shortenUrl = async(req: Request, res: Response, next: NextFunction)
               user.urls= user.urls.concat(savedUrl.shortUrl)
               await user.save()
 
-              // Generate QR code
-              const qrCode = await QRCode.toDataURL(shortUrl);
+              
 
               res.status(201).json({success:true, newShortenUrl, qrCode});
 
